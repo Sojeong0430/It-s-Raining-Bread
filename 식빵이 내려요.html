@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식빵이 내려요 🍞</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+        }
+
+        .title {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            z-index: 10;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .bread {
+            position: absolute;
+            font-size: 40px;
+            animation: fall linear infinite;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .counter {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .toast {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b6b;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            z-index: 100;
+            animation: pop 0.5s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">🍞 식빵이 내려요! 🍞</div>
+    <div class="counter">잡은 식빵: <span id="count">0</span>개</div>
+    
+    <div class="controls">
+        <button onclick="toggleRain()">시작/정지</button>
+        <button onclick="clearBread()">식빵 치우기</button>
+    </div>
+
+    <script>
+        let isRaining = false;
+        let rainInterval;
+        let count = 0;
+        const breadEmojis = ['🍞', '🥖', '🥐', '🥯'];
+
+        function createBread() {
+            const bread = document.createElement('div');
+            bread.className = 'bread';
+            bread.textContent = breadEmojis[Math.floor(Math.random() * breadEmojis.length)];
+            bread.style.left = Math.random() * 100 + '%';
+            bread.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            bread.style.fontSize = (Math.random() * 30 + 30) + 'px';
+            
+            bread.addEventListener('click', function() {
+                count++;
+                document.getElementById('count').textContent = count;
+                this.remove();
+                showToast();
+            });
+
+            document.body.appendChild(bread);
+
+            setTimeout(() => {
+                if (bread.parentNode) {
+                    bread.remove();
+                }
+            }, 6000);
+        }
+
+        function showToast() {
+            const messages = ['맛있어요! 😋', '냠냠! 🍴', '굿! 👍', '잘 잡았어요! ⭐'];
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = messages[Math.floor(Math.random() * messages.length)];
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 500);
+        }
+
+        function toggleRain() {
+            isRaining = !isRaining;
+            if (isRaining) {
+                rainInterval = setInterval(createBread, 300);
+            } else {
+                clearInterval(rainInterval);
+            }
+        }
+
+        function clearBread() {
+            const breads = document.querySelectorAll('.bread');
+            breads.forEach(bread => bread.remove());
+        }
+
+        // 자동으로 시작
+        toggleRain();
+    </script>
+</body>
+</html>
